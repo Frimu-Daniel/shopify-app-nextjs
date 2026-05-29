@@ -5,11 +5,20 @@ let _shopify: Shopify | undefined;
 
 export function getShopify(): Shopify {
   if (!_shopify) {
+    const host =
+      process.env.HOST ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : undefined) ??
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'https://localhost:3000');
+
     _shopify = shopifyApi({
       apiKey: process.env.SHOPIFY_API_KEY!,
       apiSecretKey: process.env.SHOPIFY_API_SECRET!,
       scopes: process.env.SCOPES!.split(','),
-      hostName: process.env.HOST!.replace(/https?:\/\//, ''),
+      hostName: host.replace(/https?:\/\//, ''),
       hostScheme: 'https',
       apiVersion: ApiVersion.January25,
       isEmbeddedApp: true,
