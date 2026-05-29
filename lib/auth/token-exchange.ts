@@ -13,8 +13,7 @@ export async function authenticateRequest(request: Request): Promise<Session> {
   const payload = await shopify.session.decodeSessionToken(sessionToken);
   const shop = new URL(payload.dest).hostname;
 
-  // Get both offline and online sessions
-  const offlineSessionId = shopify.session.getOfflineId(shop);
+  // Use online session for user-scoped requests.
   const onlineSessionId = shopify.session.getJwtSessionId(shop, payload.sub);
 
   const existingSession = await sessionStorage.loadSession(onlineSessionId);
