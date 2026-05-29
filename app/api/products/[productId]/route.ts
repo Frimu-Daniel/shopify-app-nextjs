@@ -49,6 +49,8 @@ export async function GET(request: Request, context: RouteContext) {
       return error;
     }
 
-    return NextResponse.json({error: 'Internal error'}, {status: 500});
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[products/[productId]]', message, error);
+    return NextResponse.json({error: message}, {status: 500});
   }
 }
