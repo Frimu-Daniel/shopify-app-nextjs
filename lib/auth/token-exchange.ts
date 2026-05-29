@@ -1,5 +1,5 @@
 import {Session, InvalidJwtError, HttpResponseError, RequestedTokenType} from '@shopify/shopify-api';
-import {shopify} from '../shopify';
+import {getShopify} from '../shopify';
 import {sessionStorage} from '../session-storage';
 
 const EXPIRY_BUFFER_MS = 5 * 60 * 1000; // 5 minutes
@@ -10,6 +10,7 @@ export async function authenticateRequest(request: Request): Promise<Session> {
     throw new Response('Unauthorized', {status: 401});
   }
 
+  const shopify = getShopify();
   const payload = await shopify.session.decodeSessionToken(sessionToken);
   const shop = new URL(payload.dest).hostname;
 
@@ -30,6 +31,7 @@ async function performTokenExchange(
   sessionToken: string,
 ): Promise<Session> {
   try {
+    const shopify = getShopify();
     // Get offline token first (for webhooks, background jobs)
     const {session: offlineSession} = await shopify.auth.tokenExchange({
       sessionToken,
