@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,11 +27,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Script
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script
           src={`https://cdn.shopify.com/shopifycloud/app-bridge.js?apiKey=${process.env.SHOPIFY_API_KEY}`}
-          strategy="beforeInteractive"
         />
+      </head>
+      <body className="min-h-full flex flex-col">
         {children}
       </body>
     </html>
